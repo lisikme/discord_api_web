@@ -191,7 +191,7 @@ export default function DiscordAPITest() {
                           <p>
                             <strong>ID:</strong> {userInfo.id}
                           </p>
-                          {userInfo.discriminator && (
+                          {userInfo.discriminator && userInfo.discriminator !== "0" && (
                             <p>
                               <strong>Дискриминатор:</strong> #{userInfo.discriminator}
                             </p>
