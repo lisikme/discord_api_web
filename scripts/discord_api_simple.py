@@ -2,7 +2,7 @@ import requests
 import json
 
 # Замените на ваш Discord Bot Token
-DISCORD_BOT_TOKEN = "MTM5Mzg1NjMxNTA2NzIwMzYzNQ.GO6nch.nReL1fRnIPUDQN_V3Prq25HBseWtDw-M0Nm4mI"
+DISCORD_BOT_TOKEN = "YOUR_DISCORD_BOT_TOKEN_HERE"
 
 def get_discord_user_info(user_id):
     """
