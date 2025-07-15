@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #5865F2;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4752C4;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #5865F2;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+        }
+        .error {
+            color: #dc3545;
+            border-left-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Discord API Test</h1>
+        <p>Введите Discord User ID для получения информации:</p>
+        
+        <div>
+            <input type="text" id="userId" placeholder="Discord User ID" value="470573716711931905">
+            <button onclick="getUserInfo()">Получить информацию</button>
+        </div>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function getUserInfo() {
+            const userId = document.getElementById('userId').value;
+            const resultDiv = document.getElementById('result');
+            
+            if (!userId) {
+                resultDiv.innerHTML = '<div class="result error">Введите User ID</div>';
+                return;
+            }
+            
+            resultDiv.innerHTML = '<div class="result">Загрузка...</div>';
+            
+            try {
+                // Замените URL на ваш сервер
+                const response = await fetch(`http://localhost:5000/?userid=${userId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="result">
+                            <h3>Информация о пользователе:</h3>
+                            <div class="user-info">
+                                <img src="${data.avatar}" alt="Avatar" class="avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                                <div>
+                                    <p><strong>Имя:</strong> ${data.name}</p>
+                                    <p><strong>Отображаемое имя:</strong> ${data.displayname}</p>
+                                    <p><strong>ID:</strong> ${data.id}</p>
+                                    <p><strong>Дискриминатор:</strong> #${data.discriminator}</p>
+                                </div>
+                            </div>
+                            <h4>JSON ответ:</h4>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+                            <h3>Ошибка:</h3>
+                            <p>${data.error}</p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        <h3>Ошибка запроса:</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Обработка Enter в поле ввода
+        document.getElementById('userId').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                getUserInfo();
+            }
+        });
+    </script>
+</body>
+</html>
